@@ -1,6 +1,7 @@
 package dhbw.group2.humans;
 
 import dhbw.group2.Passport;
+import dhbw.group2.ticket.Ticket;
 
 public class Passenger extends Human {
     private Passport passport;

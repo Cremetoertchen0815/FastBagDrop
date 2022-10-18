@@ -26,6 +26,7 @@ public class FBDMachine {
             if (correctPin.equals(enteredPin)) return true;
             sect.display.printMessage("Wrong PIN!");
         }
+
         card.status = IDCardStatus.LOCKED;
         sect.display.printMessage("Wrong PIN entered three times in a row! Card locked!");
         return false;
