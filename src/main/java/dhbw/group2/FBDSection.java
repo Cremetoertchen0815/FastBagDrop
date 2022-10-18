@@ -1,11 +1,13 @@
 package dhbw.group2;
 
 public class FBDSection {
-    private IPrinter printerA;
-    private IPrinter printerB;
-    private IPrinter printerC;
-    private PassportScanner passportScan;
-    private Reader reader;
-    private BaggageScanner baggageScan;
-    private ConveyorBelt conveyor;
+    public IPrinter printerBoardingPass;
+    public IPrinter printerBaggageTag;
+    public IPrinter printerVoucher;
+    public PassportScanner passportScan;
+    public Sensor sensor;
+    public Display display;
+    public IDCardReader reader;
+    public BaggageScanner baggageScan;
+    public ConveyorBelt conveyor;
 }
