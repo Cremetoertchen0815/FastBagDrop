@@ -1,9 +1,6 @@
 package dhbw.group2;
 
-import dhbw.group2.humans.FederalPoliceOfficer;
-import dhbw.group2.humans.Human;
-import dhbw.group2.humans.Passenger;
-import dhbw.group2.humans.ServiceAgent;
+import dhbw.group2.humans.*;
 
 import java.util.List;
 
@@ -23,27 +20,34 @@ public class FBDMachine {
     private boolean checkID(IDCard card, int section) {
         if (card.status == IDCardStatus.LOCKED) return false;
         var sect = sections[section];
-        var correctPin = sect.reader.readPin(card, encryptionAlgorithm);
-        var enteredPin = sect.display.readInput();
-        return correctPin.equals(enteredPin);
+        var correctPin = sect.reader.readPin(card, CentralConfig.getInstance().encryptionAlgorithm);
+        for (int i = 0; i < 3; i++) {
+            var enteredPin = sect.display.readInput();
+            if (correctPin.equals(enteredPin)) return true;
+            sect.display.printMessage("Wrong PIN!");
+        }
+        card.status = IDCardStatus.LOCKED;
+        sect.display.printMessage("Wrong PIN entered three times in a row! Card locked!");
+        return false;
     }
 
     public void startup(Human actor, int section) {
-        if (!(actor instanceof ServiceAgent) || !checkID(((ServiceAgent) actor).getCard(), section) || state != StateEnum.OFF) return;
+        if (!(actor instanceof ServiceAgent) || !checkID(((Employee)actor).getCard(), section) || state != StateEnum.OFF) return;
         state = StateEnum.ON;
     }
 
     public void shutdown(Human actor, int section) {
-        if (!(actor instanceof ServiceAgent) || !checkID(((ServiceAgent) actor).getCard(), section) || state != StateEnum.ON) return;
+        if (!(actor instanceof ServiceAgent) || !checkID(((Employee)actor).getCard(), section) || state != StateEnum.ON) return;
         state = StateEnum.OFF;
     }
 
-    public void unlock(Human actor) {
-
+    public void unlock(Human actor, int section) {
+        if (!(actor instanceof FederalPoliceOfficer) || !checkID(((Employee)actor).getCard(), section) || state != StateEnum.LOCKED) return;
+        state = StateEnum.ON;
     }
 
-    public CSVItem importFromCSV() {
-        return null;
+    public void importFromCSV() {
+
     }
 
     public void checkIn(Human actor) {
