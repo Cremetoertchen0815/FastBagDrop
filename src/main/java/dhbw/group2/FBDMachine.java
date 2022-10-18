@@ -26,20 +26,39 @@ public class FBDMachine {
             if (correctPin.equals(enteredPin)) return true;
             sect.display.printMessage("Wrong PIN!");
         }
-
         card.status = IDCardStatus.LOCKED;
         sect.display.printMessage("Wrong PIN entered three times in a row! Card locked!");
         return false;
     }
 
+    private void setState(StateEnum nuState, Human actor, int section) {
+        //Set new state
+        state = nuState;
+
+        //Update buttons
+        var dsp = sections[section].display;
+        switch (state) {
+            case ON:
+                dsp.showButton("Export", () -> export());
+                dsp.showButton("Shutdown", () -> shutdown(actor, section));
+                break;
+            case OFF:
+                dsp.showButton("Startup", () -> startup(actor, section));
+                break;
+            case LOCKED:
+                dsp.showButton("Unlock", () -> unlock(actor, section));
+                break;
+        }
+    }
+
     public void startup(Human actor, int section) {
         if (!(actor instanceof ServiceAgent) || !checkID(((Employee)actor).getCard(), section) || state != StateEnum.OFF) return;
-        state = StateEnum.ON;
+        setState(StateEnum.ON, actor, section);
     }
 
     public void shutdown(Human actor, int section) {
         if (!(actor instanceof ServiceAgent) || !checkID(((Employee)actor).getCard(), section) || state != StateEnum.ON) return;
-        state = StateEnum.OFF;
+        setState(StateEnum.OFF, actor, section);
     }
 
     public void unlock(Human actor, int section) {

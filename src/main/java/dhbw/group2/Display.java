@@ -5,8 +5,10 @@ public class Display {
         return "";
     }
 
-    public String[] buttonTexts = new String[2];
-    public Action[] buttonActions = new Action[2];
+    public void showButton(String message, Action action) {
+
+    }
+
     public void printMessage(String message) {
 
     }
