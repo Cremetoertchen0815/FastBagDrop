@@ -4,6 +4,11 @@ public class FBDMachine {
     private String serialNumber;
     private String manufacturer;
     private StateEnum state;
+    private FBDSection[] sections;
+
+    public FBDMachine() {
+        sections = new FBDSection[] { new FBDSection(), new FBDSection() };
+    }
 
     public void startup() {
 
