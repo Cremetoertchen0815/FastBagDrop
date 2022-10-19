@@ -9,7 +9,7 @@ public class FBDMachine {
     private String manufacturer;
     private StateEnum state;
 
-    private FBDSection[] sections;
+    private final FBDSection[] sections;
     private List<Passenger> leftQueue;
     private List<Passenger> rightQueue;
 
@@ -70,8 +70,24 @@ public class FBDMachine {
 
     }
 
-    public void checkIn(Human actor) {
+    private void checkIn(Passenger passenger, FBDSection section){
+        var ticket = section.passportScan.ScanPassport(passenger.getPassport(), this);
+        if (ticket == null) {
+            section.display.printMessage("Sorry. No registered ticket found for " + passenger.getName() + " and flight LH2121");
+            return;
+        }
+        section.display.printMessage("Proceed with check-in for flight LH2121?");
+        section.display.showButton("No", () -> section.display.printMessage("Check-In cancelled by user"));
+        section.display.showButton("Yes", () -> {
+            section.display.printMessage("Please enter number of checked-in baggage");
+            var pieces = Integer.parseInt(section.display.readInput());
+        });
+    }
 
+    public void checkIn() {
+        for(var pass : leftQueue) {
+            checkIn(pass, sections[0]);
+        }
     }
 
     public void BaggageDrop(Human actor) {
