@@ -66,8 +66,8 @@ public class FBDMachine {
         state = StateEnum.ON;
     }
 
-    public void importFromCSV() {
-
+    public void importFromCSV(Human actor) {
+        if (!(actor instanceof ServiceAgent)) return;
     }
 
     private void checkIn(Passenger passenger, FBDSection section){
