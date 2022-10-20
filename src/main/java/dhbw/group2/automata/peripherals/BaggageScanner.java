@@ -1,7 +1,14 @@
 package dhbw.group2.automata.peripherals;
 
+import dhbw.group2.plane.boarding.Baggage;
+
 public class BaggageScanner {
 
+    private final static String explosiveConst = "explosives";
+
+    public boolean scanBaggageForExplosives(Baggage baggage) {
+        return stringSearch(baggage.getContent(), explosiveConst);
+    }
 
     // Brute-force string search method
     private static boolean stringSearch(String string, String pattern) {

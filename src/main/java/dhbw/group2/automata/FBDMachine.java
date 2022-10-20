@@ -5,9 +5,11 @@ import dhbw.group2.humans.identification.IDCardStatus;
 import dhbw.group2.humans.*;
 import dhbw.group2.plane.AirbusA350_900SeatMap;
 import dhbw.group2.plane.IPlaneSeatMap;
+import dhbw.group2.plane.boarding.BaggageTag;
+import dhbw.group2.plane.ticket.BookingClass;
 
-import java.util.List;
-import java.util.UUID;
+import java.time.Instant;
+import java.util.*;
 
 public class FBDMachine {
     private UUID serialNumber;
@@ -17,10 +19,14 @@ public class FBDMachine {
     private final FBDSection[] sections;
     private List<Passenger> leftQueue;
     private List<Passenger> rightQueue;
-    private IPlaneSeatMap seatMap = new AirbusA350_900SeatMap();
+    private final IPlaneSeatMap seatMap = new AirbusA350_900SeatMap();
+    private final Map<Integer, BagBoardRecord> boardRecordMap = new HashMap<>();
+    private int boardRecordIndex = 0;
+
+    public static final float weightLimit = 23;
 
     public FBDMachine() {
-        sections = new FBDSection[] { new FBDSection(), new FBDSection() };
+        sections = new FBDSection[] { new FBDSection(0), new FBDSection(1) };
     }
 
     private boolean checkID(IDCard card, int section) {
@@ -88,7 +94,51 @@ public class FBDMachine {
 
         section.display.printMessage("Please enter number of checked-in baggage");
         var pieces = Integer.parseInt(section.display.readInput());
-        section.conveyor.currentBaggage = passenger.getBaggage();
+        var baggageTags = new ArrayList<BaggageTag>();
+        //Tag baggage
+        for (var baggage : passenger.getBaggage()) {
+            section.conveyor.setCurrentBaggage(baggage);
+            var res = BagBoardResult.NOK;
+            BaggageTag tag = null;
+
+            //Check baggage
+            if (section.conveyor.getMeasuredWeight() > weightLimit)
+            {
+                beep();
+                section.display.printMessage("Baggage exceeds weight limit of 23 kg");
+            } else if (section.baggageScan.scanBaggageForExplosives(section.conveyor.getCurrentBaggage()))
+            {
+                state = StateEnum.LOCKED;
+                FederalPolice.getInstance().reportForInvestigation(this, section.section);
+            } else
+            {
+                //Baggage is alright, so print tag
+                tag = section.printerBaggageTag.print();
+                baggage.attachTag(tag);
+                baggageTags.add(tag);
+                res = BagBoardResult.OK;
+            }
+
+            section.conveyor.setCurrentBaggage(null);
+            boardRecordMap.put(boardRecordIndex++, new BagBoardRecord(Instant.now().getNano(), passenger.getTicket(), tag, res));
+        }
+
+        //Print boarding pass
+        section.printerBoardingPass.setBaggageTags(baggageTags);
+        var boardingPass = section.printerBoardingPass.print();
+
+        //Print voucher
+        if (passenger.getTicket().leftSection.bookingClass == BookingClass.B) {
+            section.printerVoucher.setVoucherType("Lounge");
+            passenger.receiveVoucher(section.printerVoucher.print());
+        } else if (passenger.getTicket().leftSection.bookingClass == BookingClass.P) {
+            section.printerVoucher.setVoucherType("AC/DC");
+            passenger.receiveVoucher(section.printerVoucher.print());
+        }
+
+    }
+
+    private void beep() {
 
     }
 
@@ -114,8 +164,9 @@ public class FBDMachine {
 
     }
 
-    public void investigateExplosives(FederalPoliceOfficer responsibleOfficer) {
-
+    public void investigateExplosives(FederalPoliceOfficer responsibleOfficer, int section) {
+        sections[section].conveyor.setCurrentBaggage(null);
+        unlock(responsibleOfficer, section);
     }
 
     public void analyseData() {
