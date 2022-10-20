@@ -1,0 +1,96 @@
+<br>
+<p><span style="font-family: Arial, Helvetica, sans-serif; color: rgb(166, 10, 8); font-size: 22px;">Observer</span></p>
+<br>
+<div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><table><tr><td><pre style="margin: 0; line-height: 125%">1
+2
+3</pre></td><td><pre style="margin: 0; line-height: 125%"><span style="font-weight: bold">public</span> <span style="font-weight: bold">interface</span> <span style="font-weight: bold">ISmokeDetectorListener</span> {
+    <span style="font-weight: bold">void</span> fireIgnited(String location);
+}
+</pre></td></tr></table></div>
+<br>
+<div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><table><tr><td><pre style="margin: 0; line-height: 125%"> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23</pre></td><td><pre style="margin: 0; line-height: 125%"><span style="font-weight: bold">import</span> <span style="font-weight: bold">java.util.ArrayList</span>;
+
+<span style="font-weight: bold">public</span> <span style="font-weight: bold">class</span> <span style="font-weight: bold">SmokeDetector</span> {
+    <span style="font-weight: bold">private</span> <span style="font-weight: bold">final</span> ArrayList&lt;ISmokeDetectorListener&gt; listenerList;
+
+    <span style="font-weight: bold">public</span> SmokeDetector() {
+        listenerList = <span style="font-weight: bold">new</span> ArrayList&lt;&gt;();
+    }
+
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">void</span> falseAlarm() {
+        <span style="font-weight: bold">for</span> (ISmokeDetectorListener listener : listenerList) {
+            listener.fireIgnited(<span style="font-style: italic">&quot;SmokeDetector #1&quot;</span>);
+        }
+    }
+
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">void</span> addListener(ISmokeDetectorListener listener) {
+        listenerList.add(listener);
+    }
+
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">void</span> removeListener(ISmokeDetectorListener listener) {
+        listenerList.remove(listener);
+    }
+}
+</pre></td></tr></table></div>
+<br>
+<div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><table><tr><td><pre style="margin: 0; line-height: 125%">1
+2
+3
+4
+5
+6
+7
+8
+9</pre></td><td><pre style="margin: 0; line-height: 125%"><span style="font-weight: bold">public</span> <span style="font-weight: bold">class</span> <span style="font-weight: bold">FireDepartment</span> <span style="font-weight: bold">implements</span> ISmokeDetectorListener {
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">void</span> fireIgnited(String location) {
+        turnOut(location);
+    }
+
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">void</span> turnOut(String location) {
+        System.out.println(<span style="font-style: italic">&quot;turned out : &quot;</span> + location);
+    }
+}
+</pre></td></tr></table></div>
+<br>
+<div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><table><tr><td><pre style="margin: 0; line-height: 125%">1
+2
+3
+4
+5
+6
+7
+8
+9</pre></td><td><pre style="margin: 0; line-height: 125%"><span style="font-weight: bold">public</span> <span style="font-weight: bold">class</span> <span style="font-weight: bold">Application</span> {
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">static</span> <span style="font-weight: bold">void</span> main(String... args) {
+        SmokeDetector smokeDetector = <span style="font-weight: bold">new</span> SmokeDetector();
+        FireDepartment fireDepartment = <span style="font-weight: bold">new</span> FireDepartment();
+
+        smokeDetector.addListener(fireDepartment);
+        smokeDetector.falseAlarm();
+    }
+}
+</pre></td></tr></table></div>
+<br>
+<p><span style="font-family: Arial, Helvetica, sans-serif; font-size: 11px;">Prof. Dr. Carsten M&uuml;ller <span style="color: rgb(166, 10, 8);">|</span> Software Engineering</span></p>
