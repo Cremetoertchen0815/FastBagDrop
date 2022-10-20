@@ -1,4 +1,4 @@
-package dhbw.group2;
+package dhbw.group2.humans.identification;
 
 public class RFIDChip {
     private String pin;

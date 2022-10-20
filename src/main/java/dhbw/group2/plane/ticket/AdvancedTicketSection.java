@@ -1,4 +1,4 @@
-package dhbw.group2.ticket;
+package dhbw.group2.plane.ticket;
 
 public class AdvancedTicketSection extends TicketSection{
     public String gate;

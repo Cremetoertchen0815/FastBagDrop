@@ -1,16 +1,17 @@
 package dhbw.group2.automata;
 
-import dhbw.group2.IDCard;
-import dhbw.group2.IDCardStatus;
+import dhbw.group2.humans.identification.IDCard;
+import dhbw.group2.humans.identification.IDCardStatus;
 import dhbw.group2.humans.*;
 import dhbw.group2.plane.AirbusA350_900SeatMap;
 import dhbw.group2.plane.IPlaneSeatMap;
 
 import java.util.List;
+import java.util.UUID;
 
 public class FBDMachine {
-    private String serialNumber;
-    private String manufacturer;
+    private UUID serialNumber;
+    private MachineManufacturer manufacturer;
     private StateEnum state;
 
     private final FBDSection[] sections;
@@ -23,7 +24,7 @@ public class FBDMachine {
     }
 
     private boolean checkID(IDCard card, int section) {
-        if (card.status == IDCardStatus.LOCKED) return false;
+        if (card.getStatus() == IDCardStatus.LOCKED) return false;
         var sect = sections[section];
         var correctPin = sect.reader.readPin(card, CentralConfig.getInstance().encryptionAlgorithm);
         for (int i = 0; i < 3; i++) {
@@ -31,7 +32,7 @@ public class FBDMachine {
             if (correctPin.equals(enteredPin)) return true;
             sect.display.printMessage("Wrong PIN!");
         }
-        card.status = IDCardStatus.LOCKED;
+        card.setStatus(IDCardStatus.LOCKED);
         sect.display.printMessage("Wrong PIN entered three times in a row! Card locked!");
         return false;
     }
@@ -43,16 +44,12 @@ public class FBDMachine {
         //Update buttons
         var dsp = sections[section].display;
         switch (state) {
-            case ON:
-                dsp.showButton("Export", () -> export());
-                dsp.showButton("Shutdown", () -> shutdown(actor, section));
-                break;
-            case OFF:
-                dsp.showButton("Startup", () -> startup(actor, section));
-                break;
-            case LOCKED:
-                dsp.showButton("Unlock", () -> unlock(actor, section));
-                break;
+            case ON -> {
+                dsp.showButtonAsync("Export", this::export);
+                dsp.showButtonAsync("Shutdown", () -> shutdown(actor, section));
+            }
+            case OFF -> dsp.showButtonAsync("Startup", () -> startup(actor, section));
+            case LOCKED -> dsp.showButtonAsync("Unlock", () -> unlock(actor, section));
         }
     }
 
@@ -82,11 +79,17 @@ public class FBDMachine {
             return;
         }
         section.display.printMessage("Proceed with check-in for flight LH2121?");
-        section.display.showButton("No", () -> section.display.printMessage("Check-In cancelled by user"));
-        section.display.showButton("Yes", () -> {
-            section.display.printMessage("Please enter number of checked-in baggage");
-            var pieces = Integer.parseInt(section.display.readInput());
-        });
+        section.display.showButtons(new String[] { "No", "Yes" });
+        var answer = section.display.stallButtonSelection();
+        if (answer == 0) {
+            section.display.printMessage("Check-In cancelled by user");
+            return;
+        }
+
+        section.display.printMessage("Please enter number of checked-in baggage");
+        var pieces = Integer.parseInt(section.display.readInput());
+        section.conveyor.currentBaggage = passenger.getBaggage();
+
     }
 
     public void checkIn() {
