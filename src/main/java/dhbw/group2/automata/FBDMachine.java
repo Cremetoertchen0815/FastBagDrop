@@ -1,5 +1,7 @@
-package dhbw.group2;
+package dhbw.group2.automata;
 
+import dhbw.group2.IDCard;
+import dhbw.group2.IDCardStatus;
 import dhbw.group2.humans.*;
 
 import java.util.List;

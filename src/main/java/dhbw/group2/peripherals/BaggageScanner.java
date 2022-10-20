@@ -1,4 +1,4 @@
-package dhbw.group2;
+package dhbw.group2.peripherals;
 
 public class BaggageScanner {
 

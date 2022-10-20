@@ -1,4 +1,6 @@
-package dhbw.group2;
+package dhbw.group2.peripherals;
+
+import dhbw.group2.Action;
 
 public class Display {
     public String readInput() {

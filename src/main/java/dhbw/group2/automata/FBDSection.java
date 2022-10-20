@@ -1,4 +1,7 @@
-package dhbw.group2;
+package dhbw.group2.automata;
+
+import dhbw.group2.*;
+import dhbw.group2.peripherals.*;
 
 public class FBDSection {
     public IPrinter printerBoardingPass;
