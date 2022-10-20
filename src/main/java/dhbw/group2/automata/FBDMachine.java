@@ -123,8 +123,13 @@ public class FBDMachine {
             boardRecordMap.put(boardRecordIndex++, new BagBoardRecord(Instant.now().getNano(), passenger.getTicket(), tag, res));
         }
 
+        //Find free seat
+        var seat = seatMap.findSeat(passenger.getTicket().leftSection.bookingClass);
+        seatMap.reserveSeat(passenger, seat);
+
         //Print boarding pass
         section.printerBoardingPass.setBaggageTags(baggageTags);
+        section.printerBoardingPass.setPlaneSeat(seat);
         var boardingPass = section.printerBoardingPass.print();
 
         //Print voucher

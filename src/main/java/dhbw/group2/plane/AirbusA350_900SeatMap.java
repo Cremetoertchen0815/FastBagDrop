@@ -1,22 +1,23 @@
 package dhbw.group2.plane;
 
 import dhbw.group2.humans.Passenger;
+import dhbw.group2.plane.ticket.BookingClass;
 
 public class AirbusA350_900SeatMap implements  IPlaneSeatMap {
 
     private final Passenger[] seatMatrix = new Passenger[41 * ('K' - 'A')];
 
     @Override
-    public PlaneSeat findSeat(PassangerClass passangerClass) {
+    public PlaneSeat findSeat(BookingClass passangerClass) {
         int startRow;
         int endRow;
         switch (passangerClass) {
 
-            case BUSINESS -> {
+            case B -> {
                 startRow = 1;
                 endRow = 8;
             }
-            case PREMIUM_ECONOMY -> {
+            case P -> {
                 startRow = 12;
                 endRow = 15;
             }
@@ -42,18 +43,18 @@ public class AirbusA350_900SeatMap implements  IPlaneSeatMap {
     }
 
     @Override
-    public boolean isSeatValid(PlaneSeat seat, PassangerClass passangerClass) {
+    public boolean isSeatValid(PlaneSeat seat, BookingClass passangerClass) {
         switch(passangerClass) {
 
-            case BUSINESS -> {
+            case B -> {
                 if (seat.row() > 8 || seat.row() < 1) return false;
                 if ("ACDGKH".indexOf(seat.seat()) < 0) return false;
             }
-            case PREMIUM_ECONOMY -> {
+            case P -> {
                 if (seat.row() > 15 || seat.row() < 12) return false;
                 if ("ACDEGHK".indexOf(seat.seat()) < 0) return false;
             }
-            case ECONOMY -> {
+            case E -> {
                 if (seat.row() > 42 || seat.row() < 16 || seat.row() == 17) return false;
                 var pattern = switch (seat.row()) {
                     case 16 -> "ACDEGKH";
