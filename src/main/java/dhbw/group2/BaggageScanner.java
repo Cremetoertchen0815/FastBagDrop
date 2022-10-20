@@ -1,6 +1,8 @@
 package dhbw.group2;
 
 public class BaggageScanner {
+
+
     // Brute-force string search method
     private static boolean stringSearch(String string, String pattern) {
         int sLen = string.length();
