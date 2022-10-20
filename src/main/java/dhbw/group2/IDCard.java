@@ -1,7 +1,11 @@
 package dhbw.group2;
 
 public class IDCard {
-    public String uuid;
-    public IDCardStatus status;
-    public RFIDChip chip;
+    private String uuid;
+    private IDCardStatus status;
+    private RFIDChip chip;
+
+    public String getEncryptedPin() {
+        return chip.getEncryptedPin();
+    }
 }

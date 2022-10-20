@@ -3,6 +3,8 @@ package dhbw.group2.automata;
 import dhbw.group2.IDCard;
 import dhbw.group2.IDCardStatus;
 import dhbw.group2.humans.*;
+import dhbw.group2.plane.AirbusA350_900SeatMap;
+import dhbw.group2.plane.IPlaneSeatMap;
 
 import java.util.List;
 
@@ -14,6 +16,7 @@ public class FBDMachine {
     private final FBDSection[] sections;
     private List<Passenger> leftQueue;
     private List<Passenger> rightQueue;
+    private IPlaneSeatMap seatMap = new AirbusA350_900SeatMap();
 
     public FBDMachine() {
         sections = new FBDSection[] { new FBDSection(), new FBDSection() };
