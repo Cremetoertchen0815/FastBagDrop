@@ -5,6 +5,7 @@ import dhbw.group2.humans.identification.IDCardStatus;
 import dhbw.group2.humans.*;
 import dhbw.group2.plane.AirbusA350_900SeatMap;
 import dhbw.group2.plane.IPlaneSeatMap;
+import dhbw.group2.plane.boarding.Baggage;
 import dhbw.group2.plane.boarding.BaggageTag;
 import dhbw.group2.plane.ticket.BookingClass;
 
@@ -92,6 +93,20 @@ public class FBDMachine {
             return;
         }
 
+        baggageDrop(passenger, section);
+    }
+
+    private void beep() {
+
+    }
+
+    public void checkIn() {
+        for(var pass : leftQueue) {
+            checkIn(pass, sections[0]);
+        }
+    }
+
+    public void baggageDrop(Passenger passenger, FBDSection section) {
         section.display.printMessage("Please enter number of checked-in baggage");
         var pieces = Integer.parseInt(section.display.readInput());
         var baggageTags = new ArrayList<BaggageTag>();
@@ -102,11 +117,11 @@ public class FBDMachine {
             BaggageTag tag = null;
 
             //Check baggage
-            if (section.conveyor.getMeasuredWeight() > weightLimit)
+            if (determineWeight(section) > weightLimit)
             {
                 beep();
                 section.display.printMessage("Baggage exceeds weight limit of 23 kg");
-            } else if (section.baggageScan.scanBaggageForExplosives(section.conveyor.getCurrentBaggage()))
+            } else if (scanBaggage(section))
             {
                 state = StateEnum.LOCKED;
                 FederalPolice.getInstance().reportForInvestigation(this, section.section);
@@ -140,29 +155,14 @@ public class FBDMachine {
             section.printerVoucher.setVoucherType("AC/DC");
             passenger.receiveVoucher(section.printerVoucher.print());
         }
-
     }
 
-    private void beep() {
-
+    public float determineWeight(FBDSection section) {
+        return section.conveyor.getMeasuredWeight();
     }
 
-    public void checkIn() {
-        for(var pass : leftQueue) {
-            checkIn(pass, sections[0]);
-        }
-    }
-
-    public void BaggageDrop(Human actor) {
-
-    }
-
-    public float determineWeight() {
-        return 0;
-    }
-
-    public void scanBaggage() {
-
+    public boolean scanBaggage(FBDSection section) {
+        return section.baggageScan.scanBaggageForExplosives(section.conveyor.getCurrentBaggage());
     }
 
     public void scanBaggageTag() {
