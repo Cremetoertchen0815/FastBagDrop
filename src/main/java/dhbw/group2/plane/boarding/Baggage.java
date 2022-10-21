@@ -7,6 +7,9 @@ public class Baggage {
         return content;
     }
 
+    public Baggage(String content) {
+        this.content = content;
+    }
     public void attachTag(BaggageTag tag) {
         this.tag = tag;
     }

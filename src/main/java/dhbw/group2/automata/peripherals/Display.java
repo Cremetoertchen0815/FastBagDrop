@@ -7,6 +7,10 @@ public class Display {
         return "";
     }
 
+    public int readInt() { return 0; }
+
+    public String readPIN() { return "1234"; }
+
     public void showButtonAsync(String message, Action action) {
 
     }

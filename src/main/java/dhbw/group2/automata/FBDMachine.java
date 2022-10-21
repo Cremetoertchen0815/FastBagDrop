@@ -1,14 +1,22 @@
 package dhbw.group2.automata;
 
+import dhbw.group2.automata.peripherals.Display;
 import dhbw.group2.humans.identification.IDCard;
 import dhbw.group2.humans.identification.IDCardStatus;
 import dhbw.group2.humans.*;
+import dhbw.group2.humans.identification.Passport;
 import dhbw.group2.plane.AirbusA350_900SeatMap;
 import dhbw.group2.plane.IPlaneSeatMap;
 import dhbw.group2.plane.boarding.Baggage;
 import dhbw.group2.plane.boarding.BaggageTag;
 import dhbw.group2.plane.ticket.BookingClass;
+import dhbw.group2.plane.ticket.Ticket;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.Instant;
 import java.util.*;
 
@@ -18,10 +26,12 @@ public class FBDMachine {
     private StateEnum state;
 
     private final FBDSection[] sections;
-    private List<Passenger> leftQueue;
-    private List<Passenger> rightQueue;
+    private final List<Passenger> leftQueue = new ArrayList<>();
+    private final List<Passenger> rightQueue = new ArrayList<>();
     private final IPlaneSeatMap seatMap = new AirbusA350_900SeatMap();
+    private final Map<String, Ticket> availableTickets = new HashMap<>();
     private final Map<Integer, BagBoardRecord> boardRecordMap = new HashMap<>();
+    private final List<Baggage> checkedInBaggage = new ArrayList<>();
     private int boardRecordIndex = 0;
 
     public static final float weightLimit = 23;
@@ -30,12 +40,16 @@ public class FBDMachine {
         sections = new FBDSection[] { new FBDSection(0), new FBDSection(1) };
     }
 
+    public Map<String, Ticket> getAvailableTickets() {
+        return availableTickets;
+    }
+
     private boolean checkID(IDCard card, int section) {
         if (card.getStatus() == IDCardStatus.LOCKED) return false;
         var sect = sections[section];
         var correctPin = sect.reader.readPin(card, CentralConfig.getInstance().encryptionAlgorithm);
         for (int i = 0; i < 3; i++) {
-            var enteredPin = sect.display.readInput();
+            var enteredPin = sect.display.readPIN();
             if (correctPin.equals(enteredPin)) return true;
             sect.display.printMessage("Wrong PIN!");
         }
@@ -75,20 +89,27 @@ public class FBDMachine {
         state = StateEnum.ON;
     }
 
-    public void importFromCSV(Human actor) {
-        if (!(actor instanceof ServiceAgent)) return;
-    }
-
     private void checkIn(Passenger passenger, FBDSection section){
-        var ticket = section.passportScan.ScanPassport(passenger.getPassport(), this);
-        if (ticket == null) {
+        passenger.receiveTicket(section.passportScan.ScanPassport(passenger.getPassport(), this));
+        if (passenger.getTicket() == null) {
             section.display.printMessage("Sorry. No registered ticket found for " + passenger.getName() + " and flight LH2121");
             return;
         }
+
+
+        //Find free seat
+        var seat = seatMap.findSeat(passenger.getTicket().getBookingClass());
+        if (seat == null) {
+            section.display.printMessage("Sorry. No free seat found for flight LH2121");
+            return;
+        }
+        seatMap.reserveSeat(passenger, seat);
+        section.printerBoardingPass.setPlaneSeat(seat);
+
         section.display.printMessage("Proceed with check-in for flight LH2121?");
-        section.display.showButtons(new String[] { "No", "Yes" });
+        section.display.showButtons(new String[] {"Yes", "No" });
         var answer = section.display.stallButtonSelection();
-        if (answer == 0) {
+        if (answer == 1) {
             section.display.printMessage("Check-In cancelled by user");
             return;
         }
@@ -101,14 +122,18 @@ public class FBDMachine {
     }
 
     public void checkIn() {
-        for(var pass : leftQueue) {
-            checkIn(pass, sections[0]);
-        }
+            for(var pass : leftQueue) {
+                checkIn(pass, sections[0]);
+            }
+
+            for(Object pass : rightQueue) {
+                checkIn((Passenger)pass, sections[1]);
+            }
     }
 
     public void baggageDrop(Passenger passenger, FBDSection section) {
         section.display.printMessage("Please enter number of checked-in baggage");
-        var pieces = Integer.parseInt(section.display.readInput());
+        var pieces = section.display.readInt();
         var baggageTags = new ArrayList<BaggageTag>();
         //Tag baggage
         for (var baggage : passenger.getBaggage()) {
@@ -134,24 +159,26 @@ public class FBDMachine {
                 res = BagBoardResult.OK;
             }
 
+            //Scan baggage tag
+            if (!scanBaggageTag(section)) res = BagBoardResult.NOK;
+
+            if (res == BagBoardResult.OK) checkedInBaggage.add(baggage);
+
+            //Note down record
             section.conveyor.setCurrentBaggage(null);
             boardRecordMap.put(boardRecordIndex++, new BagBoardRecord(Instant.now().getNano(), passenger.getTicket(), tag, res));
         }
 
-        //Find free seat
-        var seat = seatMap.findSeat(passenger.getTicket().leftSection.bookingClass);
-        seatMap.reserveSeat(passenger, seat);
-
         //Print boarding pass
         section.printerBoardingPass.setBaggageTags(baggageTags);
-        section.printerBoardingPass.setPlaneSeat(seat);
         var boardingPass = section.printerBoardingPass.print();
+        passenger.receiveBoardingPass(boardingPass);
 
         //Print voucher
-        if (passenger.getTicket().leftSection.bookingClass == BookingClass.B) {
+        if (passenger.getTicket().getBookingClass() == BookingClass.B) {
             section.printerVoucher.setVoucherType("Lounge");
             passenger.receiveVoucher(section.printerVoucher.print());
-        } else if (passenger.getTicket().leftSection.bookingClass == BookingClass.P) {
+        } else if (passenger.getTicket().getBookingClass() == BookingClass.P) {
             section.printerVoucher.setVoucherType("AC/DC");
             passenger.receiveVoucher(section.printerVoucher.print());
         }
@@ -165,8 +192,8 @@ public class FBDMachine {
         return section.baggageScan.scanBaggageForExplosives(section.conveyor.getCurrentBaggage());
     }
 
-    public void scanBaggageTag() {
-
+    public boolean scanBaggageTag(FBDSection section) {
+        return section.conveyor.getCurrentBaggage() != null && section.conveyor.getCurrentBaggage().getTag() != null;
     }
 
     public void investigateExplosives(FederalPoliceOfficer responsibleOfficer, int section) {
@@ -174,7 +201,40 @@ public class FBDMachine {
         unlock(responsibleOfficer, section);
     }
 
-    public void analyseData() {
+    public void importFromCSV(Human actor) {
+
+        if (!(actor instanceof ServiceAgent)) return;
+        try{
+            try (BufferedReader br = new BufferedReader(new FileReader("passenger_data.csv"))) {
+                String line;
+                while ((line = br.readLine()) != null) {
+                    String[] values = line.split(";");
+                    var ticket = new Ticket(values[9], values[0], BookingClass.valueOf(values[8].substring(0, 1)), values[1], values[2], values[4], values[7], Long.parseLong(values[6]), values[3], values[5]);
+                    availableTickets.put(values[10], ticket);
+                }
+            }
+        } catch( Exception ex) {
+            throw new RuntimeException();
+        }
+    }
+
+    public void warmSimulation() {
+        //Creates the passengers waiting in line
+        Baggage bag = null;
+        try {
+            bag = new Baggage(Files.readString(Path.of("specification/data/baggage_content.txt")));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        for (var pss : availableTickets.entrySet().stream().sorted(Comparator.comparingInt(x -> x.getValue().getBookingClass() == BookingClass.E ? 1 : 0)).toArray()) {
+            var passenger = (Map.Entry<String, Ticket>)pss;
+            var pp = new Passport(passenger.getKey());
+            var ps = new Passenger(passenger.getValue().getName(), pp, new Baggage[] { bag });
+            (passenger.getValue().getBookingClass() == BookingClass.B ? leftQueue : rightQueue).add(ps);
+        }
+    }
+
+    public void analyseData(int section) {
 
     }
 

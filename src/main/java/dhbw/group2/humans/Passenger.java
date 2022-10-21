@@ -7,11 +7,18 @@ import dhbw.group2.plane.boarding.Voucher;
 import dhbw.group2.plane.ticket.Ticket;
 
 public class Passenger extends Human {
-    private Passport passport;
+    private final Passport passport;
+    private final Baggage[] baggage;
     private Ticket ticket;
-    private Baggage[] baggage;
     private BoardingPass boardingPass;
     private Voucher voucher;
+
+
+    public Passenger(String name, Passport passport, Baggage[] baggage) {
+        this.name = name;
+        this.passport = passport;
+        this.baggage = baggage;
+    }
 
 
     public Passport getPassport() {
@@ -32,5 +39,9 @@ public class Passenger extends Human {
 
     public void receiveVoucher(Voucher voucher) {
         this.voucher = voucher;
+    }
+
+    public void receiveTicket(Ticket ticket) {
+        this.ticket = ticket;
     }
 }
