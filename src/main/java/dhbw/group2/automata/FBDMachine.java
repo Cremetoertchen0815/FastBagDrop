@@ -12,9 +12,7 @@ import dhbw.group2.plane.boarding.BaggageTag;
 import dhbw.group2.plane.ticket.BookingClass;
 import dhbw.group2.plane.ticket.Ticket;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Instant;
@@ -173,7 +171,7 @@ public class FBDMachine {
 
             //Note down record
             section.conveyor.setCurrentBaggage(null);
-            boardRecordMap.put(boardRecordIndex++, new BagBoardRecord(Instant.now().getNano(), passenger.getTicket(), tag, res));
+            boardRecordMap.put(boardRecordIndex++, new BagBoardRecord(Instant.now().getNano(), passenger.getPassport(), passenger.getTicket(), tag, res));
         }
 
         //Print boarding pass
@@ -250,6 +248,16 @@ public class FBDMachine {
     }
 
     public void export() {
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter("fast_bag_drop.csv"))) {
+
+            for (var rc : boardRecordMap.values()) {
+                bw.write(rc.timestamp() + ";" + rc.result() + ";" + rc.ticket().getName() + ";" + rc.ticket().getBookingClass() + ";" + rc.passport().getId() + ";" + rc.ticket().getId() + ";" + rc.baggageTag().getId());
+                bw.newLine();
+            }
+            bw.flush();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
 
     }
 
