@@ -6,7 +6,7 @@ public class ConveyorBelt {
     private final BaggageSensor sensor;
     private final Display weighDisplay;
     private Baggage currentBaggage;
-    private int measuredWeight;
+    private float measuredWeight;
 
     public ConveyorBelt() {
         weighDisplay = new Display();
@@ -15,11 +15,11 @@ public class ConveyorBelt {
     }
 
     public void weighBaggage() {
-        measuredWeight = 0;
+        measuredWeight = currentBaggage.getWeight();
         weighDisplay.printMessage("Weight: " + measuredWeight + " kg");
     }
 
-    public int getMeasuredWeight() {
+    public float getMeasuredWeight() {
         return measuredWeight;
     }
 

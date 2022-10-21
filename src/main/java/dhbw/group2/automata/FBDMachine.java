@@ -19,6 +19,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Instant;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class FBDMachine {
     private UUID serialNumber;
@@ -31,7 +32,8 @@ public class FBDMachine {
     private final IPlaneSeatMap seatMap = new AirbusA350_900SeatMap();
     private final Map<String, Ticket> availableTickets = new HashMap<>();
     private final Map<Integer, BagBoardRecord> boardRecordMap = new HashMap<>();
-    private final List<Baggage> checkedInBaggage = new ArrayList<>();
+    private final List<BaggageClassTuple> checkedInBaggage = new ArrayList<>();
+    private final List<Passenger> checkedInPassengers = new ArrayList<>();
     private int boardRecordIndex = 0;
 
     public static final float weightLimit = 23;
@@ -115,6 +117,7 @@ public class FBDMachine {
         }
 
         baggageDrop(passenger, section);
+
     }
 
     private void beep() {
@@ -162,7 +165,11 @@ public class FBDMachine {
             //Scan baggage tag
             if (!scanBaggageTag(section)) res = BagBoardResult.NOK;
 
-            if (res == BagBoardResult.OK) checkedInBaggage.add(baggage);
+            if (res == BagBoardResult.OK)
+            {
+                checkedInBaggage.add(new BaggageClassTuple(baggage, passenger.getTicket().getBookingClass()));
+                checkedInPassengers.add(passenger);
+            }
 
             //Note down record
             section.conveyor.setCurrentBaggage(null);
@@ -235,7 +242,11 @@ public class FBDMachine {
     }
 
     public void analyseData(int section) {
-
+        var weights = checkedInBaggage.stream().collect(Collectors.groupingBy(BaggageClassTuple::bookingClass, Collectors.summingDouble(x -> x.baggage().getWeight())));
+        sections[section].display.printMessage(weights.toString());
+        var pass = checkedInPassengers.stream().sorted(Comparator.comparing(x -> x.getName().split(" ")[1]))
+                .collect(Collectors.groupingBy(x -> x.getTicket().getBookingClass(), Collectors.mapping(Passenger::toString, Collectors.toList())));
+        sections[section].display.printMessage(pass.toString());
     }
 
     public void export() {
