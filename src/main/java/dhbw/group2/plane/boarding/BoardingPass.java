@@ -9,7 +9,10 @@ public class BoardingPass {
 
     private final PlaneSeat seat;
 
-    public BoardingPass(List<BaggageTag> baggageTags, PlaneSeat seat) { this.baggageTags = baggageTags; this.seat = seat; }
+    public BoardingPass(List<BaggageTag> baggageTags, PlaneSeat seat) {
+        this.baggageTags = baggageTags;
+        this.seat = seat;
+    }
 
     public List<BaggageTag> getBaggageTags() {
         return baggageTags;

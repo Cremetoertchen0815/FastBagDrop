@@ -1,16 +1,18 @@
 package dhbw.group2.plane.boarding;
 
 public class Baggage {
-    private String content;
+    private final String content;
     private BaggageTag tag;
     private float weight;
-    public String getContent() {
-        return content;
-    }
 
     public Baggage(String content) {
         this.content = content;
     }
+
+    public String getContent() {
+        return content;
+    }
+
     public void attachTag(BaggageTag tag) {
         this.tag = tag;
     }
