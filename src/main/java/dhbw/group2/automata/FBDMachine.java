@@ -1,9 +1,8 @@
 package dhbw.group2.automata;
 
-import dhbw.group2.automata.peripherals.Display;
+import dhbw.group2.humans.*;
 import dhbw.group2.humans.identification.IDCard;
 import dhbw.group2.humans.identification.IDCardStatus;
-import dhbw.group2.humans.*;
 import dhbw.group2.humans.identification.Passport;
 import dhbw.group2.plane.AirbusA350_900SeatMap;
 import dhbw.group2.plane.IPlaneSeatMap;
@@ -20,10 +19,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class FBDMachine {
-    private UUID serialNumber;
-    private MachineManufacturer manufacturer;
-    private StateEnum state;
-
+    public static final float weightLimit = 23;
     private final FBDSection[] sections;
     private final List<Passenger> leftQueue = new ArrayList<>();
     private final List<Passenger> rightQueue = new ArrayList<>();
@@ -32,12 +28,13 @@ public class FBDMachine {
     private final Map<Integer, BagBoardRecord> boardRecordMap = new HashMap<>();
     private final List<BaggageClassTuple> checkedInBaggage = new ArrayList<>();
     private final List<Passenger> checkedInPassengers = new ArrayList<>();
+    private UUID serialNumber;
+    private MachineManufacturer manufacturer;
+    private StateEnum state;
     private int boardRecordIndex = 0;
 
-    public static final float weightLimit = 23;
-
     public FBDMachine() {
-        sections = new FBDSection[] { new FBDSection(0), new FBDSection(1) };
+        sections = new FBDSection[]{new FBDSection(0), new FBDSection(1)};
     }
 
     public Map<String, Ticket> getAvailableTickets() {
@@ -75,21 +72,24 @@ public class FBDMachine {
     }
 
     public void startup(Human actor, int section) {
-        if (!(actor instanceof ServiceAgent) || !checkID(((Employee)actor).getCard(), section) || state != StateEnum.OFF) return;
+        if (!(actor instanceof ServiceAgent) || !checkID(((Employee) actor).getCard(), section) || state != StateEnum.OFF)
+            return;
         setState(StateEnum.ON, actor, section);
     }
 
     public void shutdown(Human actor, int section) {
-        if (!(actor instanceof ServiceAgent) || !checkID(((Employee)actor).getCard(), section) || state != StateEnum.ON) return;
+        if (!(actor instanceof ServiceAgent) || !checkID(((Employee) actor).getCard(), section) || state != StateEnum.ON)
+            return;
         setState(StateEnum.OFF, actor, section);
     }
 
     public void unlock(Human actor, int section) {
-        if (!(actor instanceof FederalPoliceOfficer) || !checkID(((Employee)actor).getCard(), section) || state != StateEnum.LOCKED) return;
+        if (!(actor instanceof FederalPoliceOfficer) || !checkID(((Employee) actor).getCard(), section) || state != StateEnum.LOCKED)
+            return;
         state = StateEnum.ON;
     }
 
-    private void checkIn(Passenger passenger, FBDSection section){
+    private void checkIn(Passenger passenger, FBDSection section) {
         passenger.receiveTicket(section.passportScan.ScanPassport(passenger.getPassport(), this));
         if (passenger.getTicket() == null) {
             section.display.printMessage("Sorry. No registered ticket found for " + passenger.getName() + " and flight LH2121");
@@ -107,7 +107,7 @@ public class FBDMachine {
         section.printerBoardingPass.setPlaneSeat(seat);
 
         section.display.printMessage("Proceed with check-in for flight LH2121?");
-        section.display.showButtons(new String[] {"Yes", "No" });
+        section.display.showButtons(new String[]{"Yes", "No"});
         var answer = section.display.stallButtonSelection();
         if (answer == 1) {
             section.display.printMessage("Check-In cancelled by user");
@@ -123,13 +123,13 @@ public class FBDMachine {
     }
 
     public void checkIn() {
-            for(var pass : leftQueue) {
-                checkIn(pass, sections[0]);
-            }
+        for (var pass : leftQueue) {
+            checkIn(pass, sections[0]);
+        }
 
-            for(Object pass : rightQueue) {
-                checkIn((Passenger)pass, sections[1]);
-            }
+        for (Object pass : rightQueue) {
+            checkIn((Passenger) pass, sections[1]);
+        }
     }
 
     public void baggageDrop(Passenger passenger, FBDSection section) {
@@ -143,16 +143,13 @@ public class FBDMachine {
             BaggageTag tag = null;
 
             //Check baggage
-            if (determineWeight(section) > weightLimit)
-            {
+            if (determineWeight(section) > weightLimit) {
                 beep();
                 section.display.printMessage("Baggage exceeds weight limit of 23 kg");
-            } else if (scanBaggage(section))
-            {
+            } else if (scanBaggage(section)) {
                 state = StateEnum.LOCKED;
                 FederalPolice.getInstance().reportForInvestigation(this, section.section);
-            } else
-            {
+            } else {
                 //Baggage is alright, so print tag
                 tag = section.printerBaggageTag.print();
                 baggage.attachTag(tag);
@@ -163,8 +160,7 @@ public class FBDMachine {
             //Scan baggage tag
             if (!scanBaggageTag(section)) res = BagBoardResult.NOK;
 
-            if (res == BagBoardResult.OK)
-            {
+            if (res == BagBoardResult.OK) {
                 checkedInBaggage.add(new BaggageClassTuple(baggage, passenger.getTicket().getBookingClass()));
                 checkedInPassengers.add(passenger);
             }
@@ -209,7 +205,7 @@ public class FBDMachine {
     public void importFromCSV(Human actor) {
 
         if (!(actor instanceof ServiceAgent)) return;
-        try{
+        try {
             try (BufferedReader br = new BufferedReader(new FileReader("passenger_data.csv"))) {
                 String line;
                 while ((line = br.readLine()) != null) {
@@ -218,7 +214,7 @@ public class FBDMachine {
                     availableTickets.put(values[10], ticket);
                 }
             }
-        } catch( Exception ex) {
+        } catch (Exception ex) {
             throw new RuntimeException();
         }
     }
@@ -232,9 +228,9 @@ public class FBDMachine {
             throw new RuntimeException(e);
         }
         for (var pss : availableTickets.entrySet().stream().sorted(Comparator.comparingInt(x -> x.getValue().getBookingClass() == BookingClass.E ? 1 : 0)).toArray()) {
-            var passenger = (Map.Entry<String, Ticket>)pss;
+            var passenger = (Map.Entry<String, Ticket>) pss;
             var pp = new Passport(passenger.getKey());
-            var ps = new Passenger(passenger.getValue().getName(), pp, new Baggage[] { bag });
+            var ps = new Passenger(passenger.getValue().getName(), pp, new Baggage[]{bag});
             (passenger.getValue().getBookingClass() == BookingClass.B ? leftQueue : rightQueue).add(ps);
         }
     }

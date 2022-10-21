@@ -1,6 +1,6 @@
 package dhbw.group2.plane.ticket;
 
-public class AdvancedTicketSection extends TicketSection{
+public class AdvancedTicketSection extends TicketSection {
     public String gate;
     public String boardingTime;
 

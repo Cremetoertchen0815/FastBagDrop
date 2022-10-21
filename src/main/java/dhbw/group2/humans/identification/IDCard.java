@@ -3,7 +3,7 @@ package dhbw.group2.humans.identification;
 public class IDCard {
     private String uuid;
     private IDCardStatus status;
-    private RFIDChip chip = new RFIDChip("1234");
+    private final RFIDChip chip = new RFIDChip("1234");
 
     public String getEncryptedPin() {
         return chip.getEncryptedPin();

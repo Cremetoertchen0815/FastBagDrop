@@ -16,6 +16,7 @@ public class Ticket {
     public String getBoardingTime() {
         return rightSection.boardingTime;
     }
+
     public String getName() {
         return leftSection.name;
     }

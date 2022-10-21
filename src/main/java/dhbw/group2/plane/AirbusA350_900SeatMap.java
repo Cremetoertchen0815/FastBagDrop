@@ -3,7 +3,7 @@ package dhbw.group2.plane;
 import dhbw.group2.humans.Passenger;
 import dhbw.group2.plane.ticket.BookingClass;
 
-public class AirbusA350_900SeatMap implements  IPlaneSeatMap {
+public class AirbusA350_900SeatMap implements IPlaneSeatMap {
 
     private final Passenger[] seatMatrix = new Passenger[41 * ('K' - 'A')];
 
@@ -27,14 +27,14 @@ public class AirbusA350_900SeatMap implements  IPlaneSeatMap {
             }
         }
 
-            for (int i = startRow; i < endRow; i++) {
-                for (char j = 'A'; j < 'K'; j++) {
-                    var nuSeat = new PlaneSeat(i, j);
-                    if (isSeatValid(nuSeat, passangerClass) && !isSeatReserved(nuSeat)) return nuSeat;
-                }
+        for (int i = startRow; i < endRow; i++) {
+            for (char j = 'A'; j < 'K'; j++) {
+                var nuSeat = new PlaneSeat(i, j);
+                if (isSeatValid(nuSeat, passangerClass) && !isSeatReserved(nuSeat)) return nuSeat;
             }
+        }
 
-            return null;
+        return null;
     }
 
     @Override
@@ -44,7 +44,7 @@ public class AirbusA350_900SeatMap implements  IPlaneSeatMap {
 
     @Override
     public boolean isSeatValid(PlaneSeat seat, BookingClass passangerClass) {
-        switch(passangerClass) {
+        switch (passangerClass) {
 
             case B -> {
                 if (seat.row() > 8 || seat.row() < 1) return false;

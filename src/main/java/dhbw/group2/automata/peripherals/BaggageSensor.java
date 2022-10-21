@@ -5,6 +5,7 @@ import java.util.ArrayList;
 public class BaggageSensor {
 
     private final ArrayList<IBaggageDetectorListener> listeners = new ArrayList<>();
+
     public void trigger() {
         for (var listener : listeners) listener.baggagePlacedOnConveyor();
     }
