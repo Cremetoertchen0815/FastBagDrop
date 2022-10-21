@@ -10,16 +10,18 @@ public class TicketSection {
     public String id;
     public long sequence;
 
+    public TicketSection(String name, String flight, BookingClass bookingClass, String source, String destination, String date, String id, long sequence) {
+        this.name = name;
+        this.flight = flight;
+        this.bookingClass = bookingClass;
+        this.source = source;
+        this.destination = destination;
+        this.date = date;
+        this.id = id;
+        this.sequence = sequence;
+    }
+
     public TicketSection Clone() {
-        var res = new TicketSection();
-        res.name = name;
-        res.flight = flight;
-        res.bookingClass = bookingClass;
-        res.source = source;
-        res.destination = destination;
-        res.date = date;
-        res.id = id;
-        res.sequence = sequence;
-        return res;
+        return new TicketSection(name, flight, bookingClass, source, destination, date, id, sequence);
     }
 }

@@ -6,6 +6,6 @@ import dhbw.group2.plane.ticket.Ticket;
 
 public class PassportScanner {
     public Ticket ScanPassport(Passport passport, FBDMachine machine) {
-        return null;
+        return machine.getAvailableTickets().get(passport.getId());
     }
 }
