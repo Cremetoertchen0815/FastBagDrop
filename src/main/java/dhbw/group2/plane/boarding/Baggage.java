@@ -3,6 +3,7 @@ package dhbw.group2.plane.boarding;
 public class Baggage {
     private String content;
     private BaggageTag tag;
+    private float weight;
     public String getContent() {
         return content;
     }
@@ -16,5 +17,13 @@ public class Baggage {
 
     public BaggageTag getTag() {
         return tag;
+    }
+
+    public float getWeight() {
+        return weight;
+    }
+
+    public void setWeight(float weight) {
+        this.weight = weight;
     }
 }

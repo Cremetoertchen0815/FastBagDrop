@@ -44,4 +44,9 @@ public class Passenger extends Human {
     public void receiveTicket(Ticket ticket) {
         this.ticket = ticket;
     }
+
+    @Override
+    public String toString() {
+        return "(" + name + "|" + ticket.getBookingClass().toString() + "|" + boardingPass.getSeat().toString() + "|" + baggage.length + ")";
+    }
 }
