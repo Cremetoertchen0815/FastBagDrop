@@ -4,12 +4,12 @@ import dhbw.group2.plane.PlaneSeat;
 
 import java.util.List;
 
-public class BoardingPass {
+public class PaperBoardingPass implements IBoardingPass {
     private final List<BaggageTag> baggageTags;
     private final BoardingQRCode qrCode;
     private final PlaneSeat seat;
 
-    public BoardingPass(List<BaggageTag> baggageTags, BoardingQRCode qrCode, PlaneSeat seat) {
+    public PaperBoardingPass(List<BaggageTag> baggageTags, BoardingQRCode qrCode, PlaneSeat seat) {
         this.baggageTags = baggageTags;
         this.qrCode = qrCode;
         this.seat = seat;
