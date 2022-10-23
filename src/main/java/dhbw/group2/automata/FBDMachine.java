@@ -90,7 +90,7 @@ public class FBDMachine {
     }
 
     private void checkIn(Passenger passenger, FBDSection section) {
-        passenger.receiveTicket(section.passportScan.ScanPassport(passenger.getPassport(), this));
+        passenger.receiveTicket(section.identityScanner.identityPassenger(passenger, this));
         if (passenger.getTicket() == null) {
             section.display.printMessage("Sorry. No registered ticket found for " + passenger.getName() + " and flight LH2121");
             return;
