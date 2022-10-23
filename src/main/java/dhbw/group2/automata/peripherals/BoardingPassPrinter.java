@@ -2,9 +2,9 @@ package dhbw.group2.automata.peripherals;
 
 import dhbw.group2.plane.PlaneSeat;
 import dhbw.group2.plane.boarding.BaggageTag;
-import dhbw.group2.plane.boarding.PaperBoardingPass;
 import dhbw.group2.plane.boarding.BoardingQRCode;
 import dhbw.group2.plane.boarding.IBoardingDataMedium;
+import dhbw.group2.plane.boarding.PaperBoardingPass;
 
 import java.util.List;
 

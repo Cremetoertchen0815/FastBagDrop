@@ -3,7 +3,6 @@ package dhbw.group2.humans;
 import dhbw.group2.humans.identification.Passport;
 import dhbw.group2.plane.boarding.Baggage;
 import dhbw.group2.plane.boarding.IBoardingPass;
-import dhbw.group2.plane.boarding.PaperBoardingPass;
 import dhbw.group2.plane.boarding.Voucher;
 import dhbw.group2.plane.ticket.Ticket;
 
@@ -34,7 +33,9 @@ public class Passenger extends Human {
         return baggage;
     }
 
-    public IBoardingPass getBoardingPass() { return boardingPass; }
+    public IBoardingPass getBoardingPass() {
+        return boardingPass;
+    }
 
     public void receiveBoardingPass(IBoardingPass boardingPass) {
         this.boardingPass = boardingPass;

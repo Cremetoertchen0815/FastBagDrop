@@ -7,8 +7,12 @@ import java.util.List;
 public interface IBoardingDataMedium {
 
     void setBaggageTags(List<BaggageTag> baggageTags);
+
     void setPlaneSeat(PlaneSeat planeSeat);
+
     void setSource(String source);
+
     void setDestination(String destination);
+
     void setFlight(String flight);
 }

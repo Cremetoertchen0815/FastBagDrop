@@ -1,9 +1,9 @@
 package dhbw.group2.humans.identification;
 
 public class IDCard {
+    private final RFIDChip chip = new RFIDChip("1234");
     private String uuid;
     private IDCardStatus status;
-    private final RFIDChip chip = new RFIDChip("1234");
 
     public String getEncryptedPin() {
         return chip.getEncryptedPin();

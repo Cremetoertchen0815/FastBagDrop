@@ -7,7 +7,8 @@ public class FederalPolice {
     private static final FederalPolice instance = new FederalPolice();
     private final FederalPoliceOfficer[] officers = new FederalPoliceOfficer[]{new FederalPoliceOfficer()};
 
-    private FederalPolice() { }
+    private FederalPolice() {
+    }
 
     public static FederalPolice getInstance() {
         return instance;
