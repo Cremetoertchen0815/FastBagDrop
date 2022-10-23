@@ -8,7 +8,7 @@ import dhbw.group2.plane.ticket.Ticket;
 public class FaceScanner implements IPassengerIdentificator {
     @Override
     public Ticket identityPassenger(Passenger passenger, FBDMachine machine) {
-        //TODO: Implement identification via face recognition
+        //TODO: Implement identification via face recognition(future task #1)
         return null;
     }
 }
