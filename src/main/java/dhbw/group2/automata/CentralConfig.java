@@ -4,7 +4,8 @@ public class CentralConfig {
     //Singleton pattern implementation
     private static CentralConfig instance;
     //Fields
-    public EncryptionAlgorithm encryptionAlgorithm;
+    public EncryptionAlgorithm encryptionAlgorithm = EncryptionAlgorithm.AES;
+    public ScanAlgorithm baggageScanAlgorithm = ScanAlgorithm.BRUTE_FORCE;
 
     private CentralConfig() {
         instance = new CentralConfig();

@@ -8,7 +8,7 @@ import dhbw.group2.plane.ticket.Ticket;
 public class FingerprintScanner implements IPassengerIdentificator {
     @Override
     public Ticket identityPassenger(Passenger passenger, FBDMachine machine) {
-        //TODO: Implement identification via fingerprint
+        //TODO: Implement identification via fingerprint(future task #1)
         return null;
     }
 }

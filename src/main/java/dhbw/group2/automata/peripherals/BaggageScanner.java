@@ -1,5 +1,6 @@
 package dhbw.group2.automata.peripherals;
 
+import dhbw.group2.automata.CentralConfig;
 import dhbw.group2.plane.boarding.Baggage;
 
 public class BaggageScanner {
@@ -7,7 +8,7 @@ public class BaggageScanner {
     private final static String explosiveConst = "explosives";
 
     // Brute-force string search method
-    private static boolean stringSearch(String string, String pattern) {
+    private static boolean bruteForceScan(String string, String pattern) {
         int sLen = string.length();
         int pLen = pattern.length();
         for (int i = 0; i < sLen - pLen + 1; i++) {
@@ -22,6 +23,10 @@ public class BaggageScanner {
     }
 
     public boolean scanBaggageForExplosives(Baggage baggage) {
-        return stringSearch(baggage.getContent(), explosiveConst);
+        //TODO: Implement scanning algorithms other than brute force(future task #2)
+        return switch (CentralConfig.getInstance().baggageScanAlgorithm) {
+            case BRUTE_FORCE -> bruteForceScan(baggage.getContent(), explosiveConst);
+            default -> false;
+        };
     }
 }
