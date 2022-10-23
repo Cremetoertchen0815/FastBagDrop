@@ -172,6 +172,9 @@ public class FBDMachine {
 
         //Print boarding pass
         section.printerBoardingPass.setBaggageTags(baggageTags);
+        section.printerBoardingPass.setSource(passenger.getTicket().getSource());
+        section.printerBoardingPass.setDestination(passenger.getTicket().getDestination());
+        section.printerBoardingPass.setFlight(passenger.getTicket().getFlight());
         var boardingPass = section.printerBoardingPass.print();
         passenger.receiveBoardingPass(boardingPass);
 

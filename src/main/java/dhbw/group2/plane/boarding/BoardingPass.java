@@ -6,11 +6,12 @@ import java.util.List;
 
 public class BoardingPass {
     private final List<BaggageTag> baggageTags;
-
+    private final BoardingQRCode qrCode;
     private final PlaneSeat seat;
 
-    public BoardingPass(List<BaggageTag> baggageTags, PlaneSeat seat) {
+    public BoardingPass(List<BaggageTag> baggageTags, BoardingQRCode qrCode, PlaneSeat seat) {
         this.baggageTags = baggageTags;
+        this.qrCode = qrCode;
         this.seat = seat;
     }
 
