@@ -221,16 +221,21 @@ public class FBDMachine {
 
     public void warmSimulation() {
         //Creates the passengers waiting in line
-        Baggage bag = null;
+        int ln = 0;
+        var lines = new ArrayList<String>();
         try {
-            bag = new Baggage(Files.readString(Path.of("specification/data/baggage_content.txt")));
+            try (BufferedReader br = new BufferedReader(new FileReader("specification/data/baggage_content.txt"))) {
+                String line;
+                while ((line = br.readLine()) != null) lines.add(line);
+            }
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+
         for (var pss : availableTickets.entrySet().stream().sorted(Comparator.comparingInt(x -> x.getValue().getBookingClass() == BookingClass.E ? 1 : 0)).toArray()) {
             var passenger = (Map.Entry<String, Ticket>) pss;
             var pp = new Passport(passenger.getKey());
-            var ps = new Passenger(passenger.getValue().getName(), pp, new Baggage[]{bag});
+            var ps = new Passenger(passenger.getValue().getName(), pp, new Baggage[]{new Baggage(lines.get(ln++))});
             (passenger.getValue().getBookingClass() == BookingClass.B ? leftQueue : rightQueue).add(ps);
         }
     }
