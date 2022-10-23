@@ -1,16 +1,10 @@
-package dhbw.group2.automata.peripherals;
+package dhbw.group2.plane.boarding;
 
 import dhbw.group2.plane.PlaneSeat;
-import dhbw.group2.plane.boarding.BaggageTag;
-import dhbw.group2.plane.boarding.PaperBoardingPass;
-import dhbw.group2.plane.boarding.BoardingQRCode;
-import dhbw.group2.plane.boarding.IBoardingDataMedium;
 
 import java.util.List;
 
-public class BoardingPassPrinter implements IPrinter<PaperBoardingPass>, IBoardingDataMedium {
-
-
+public class OnlineBoardingPass implements IBoardingDataMedium, IBoardingPass {
     private String source;
     private String destination;
     private String flight;
@@ -37,8 +31,25 @@ public class BoardingPassPrinter implements IPrinter<PaperBoardingPass>, IBoardi
         this.flight = flight;
     }
 
+    public String getSource() {
+        return source;
+    }
+
+    public String getDestination() {
+        return destination;
+    }
+
+    public String getFlight() {
+        return flight;
+    }
+
     @Override
-    public PaperBoardingPass print() {
-        return new PaperBoardingPass(baggageTags, new BoardingQRCode(source, destination, flight), planeSeat);
+    public List<BaggageTag> getBaggageTags() {
+        return baggageTags;
+    }
+
+    @Override
+    public PlaneSeat getSeat() {
+        return planeSeat;
     }
 }

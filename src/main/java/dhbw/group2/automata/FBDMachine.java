@@ -1,5 +1,6 @@
 package dhbw.group2.automata;
 
+import dhbw.group2.automata.peripherals.IPrinter;
 import dhbw.group2.humans.*;
 import dhbw.group2.humans.identification.IDCard;
 import dhbw.group2.humans.identification.IDCardStatus;
@@ -8,6 +9,8 @@ import dhbw.group2.plane.AirbusA350_900SeatMap;
 import dhbw.group2.plane.IPlaneSeatMap;
 import dhbw.group2.plane.boarding.Baggage;
 import dhbw.group2.plane.boarding.BaggageTag;
+import dhbw.group2.plane.boarding.IBoardingDataMedium;
+import dhbw.group2.plane.boarding.OnlineBoardingPass;
 import dhbw.group2.plane.ticket.BookingClass;
 import dhbw.group2.plane.ticket.Ticket;
 
@@ -170,13 +173,17 @@ public class FBDMachine {
             boardRecordMap.put(boardRecordIndex++, new BagBoardRecord(Instant.now().getNano(), passenger.getPassport(), passenger.getTicket(), tag, res));
         }
 
-        //Print boarding pass
-        section.printerBoardingPass.setBaggageTags(baggageTags);
-        section.printerBoardingPass.setSource(passenger.getTicket().getSource());
-        section.printerBoardingPass.setDestination(passenger.getTicket().getDestination());
-        section.printerBoardingPass.setFlight(passenger.getTicket().getFlight());
-        var boardingPass = section.printerBoardingPass.print();
-        passenger.receiveBoardingPass(boardingPass);
+        //Choose data medium(online or printer), depending on whether the passenger already has an online boarding pass
+        var boardingMedium = passenger.getBoardingPass() instanceof OnlineBoardingPass ? (IBoardingDataMedium)passenger.getBoardingPass() : section.printerBoardingPass;
+        boardingMedium.setBaggageTags(baggageTags);
+        boardingMedium.setSource(passenger.getTicket().getSource());
+        boardingMedium.setDestination(passenger.getTicket().getDestination());
+        boardingMedium.setFlight(passenger.getTicket().getFlight());
+        //Print boarding pass if medium is a printer
+        if (boardingMedium instanceof IPrinter<?>) {
+            var boardingPass = section.printerBoardingPass.print();
+            passenger.receiveBoardingPass(boardingPass);
+        }
 
         //Print voucher
         if (passenger.getTicket().getBookingClass() == BookingClass.B) {
