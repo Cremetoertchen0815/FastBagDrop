@@ -13,6 +13,7 @@ public class FBDSection {
     public final BaggageScanner baggageScan = new BaggageScanner();
     public final ConveyorBelt conveyor = new ConveyorBelt();
     public final int section;
+
     public FBDSection(int section) {
         this.section = section;
     }

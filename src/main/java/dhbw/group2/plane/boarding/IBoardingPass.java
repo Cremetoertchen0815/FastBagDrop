@@ -7,5 +7,6 @@ import java.util.List;
 public interface IBoardingPass {
 
     List<BaggageTag> getBaggageTags();
+
     PlaneSeat getSeat();
 }

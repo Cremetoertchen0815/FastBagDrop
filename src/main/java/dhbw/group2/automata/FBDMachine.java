@@ -15,8 +15,6 @@ import dhbw.group2.plane.ticket.BookingClass;
 import dhbw.group2.plane.ticket.Ticket;
 
 import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.time.Instant;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -174,7 +172,7 @@ public class FBDMachine {
         }
 
         //Choose data medium(online or printer), depending on whether the passenger already has an online boarding pass
-        var boardingMedium = passenger.getBoardingPass() instanceof OnlineBoardingPass ? (IBoardingDataMedium)passenger.getBoardingPass() : section.printerBoardingPass;
+        var boardingMedium = passenger.getBoardingPass() instanceof OnlineBoardingPass ? (IBoardingDataMedium) passenger.getBoardingPass() : section.printerBoardingPass;
         boardingMedium.setBaggageTags(baggageTags);
         boardingMedium.setSource(passenger.getTicket().getSource());
         boardingMedium.setDestination(passenger.getTicket().getDestination());

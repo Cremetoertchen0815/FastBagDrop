@@ -11,41 +11,41 @@ public class OnlineBoardingPass implements IBoardingDataMedium, IBoardingPass {
     private List<BaggageTag> baggageTags;
     private PlaneSeat planeSeat;
 
-    public void setBaggageTags(List<BaggageTag> baggageTags) {
-        this.baggageTags = baggageTags;
-    }
-
     public void setPlaneSeat(PlaneSeat planeSeat) {
         this.planeSeat = planeSeat;
-    }
-
-    public void setSource(String source) {
-        this.source = source;
-    }
-
-    public void setDestination(String destination) {
-        this.destination = destination;
-    }
-
-    public void setFlight(String flight) {
-        this.flight = flight;
     }
 
     public String getSource() {
         return source;
     }
 
+    public void setSource(String source) {
+        this.source = source;
+    }
+
     public String getDestination() {
         return destination;
+    }
+
+    public void setDestination(String destination) {
+        this.destination = destination;
     }
 
     public String getFlight() {
         return flight;
     }
 
+    public void setFlight(String flight) {
+        this.flight = flight;
+    }
+
     @Override
     public List<BaggageTag> getBaggageTags() {
         return baggageTags;
+    }
+
+    public void setBaggageTags(List<BaggageTag> baggageTags) {
+        this.baggageTags = baggageTags;
     }
 
     @Override
