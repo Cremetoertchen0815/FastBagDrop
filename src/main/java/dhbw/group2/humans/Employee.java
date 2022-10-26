@@ -8,4 +8,8 @@ public abstract class Employee extends Human {
     public IDCard getCard() {
         return card;
     }
+
+    public void setCard(IDCard card) {
+        this.card = card;
+    }
 }

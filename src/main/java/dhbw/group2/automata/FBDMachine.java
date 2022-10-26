@@ -277,4 +277,7 @@ public class FBDMachine {
     public Queue<Passenger> getRightQueue() {
         return rightQueue;
     }
+    public StateEnum getState() {
+        return state;
+    }
 }
