@@ -270,11 +270,11 @@ public class FBDMachine {
 
     }
 
-    public List<Passenger> getLeftQueue() {
+    public Queue<Passenger> getLeftQueue() {
         return leftQueue;
     }
 
-    public List<Passenger> getRightQueue() {
+    public Queue<Passenger> getRightQueue() {
         return rightQueue;
     }
 }
