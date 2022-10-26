@@ -20,13 +20,18 @@ import static org.mockito.AdditionalMatchers.*;
 import static org.mockito.Mockito.*;
 
 public class TestApp {
-    private ServiceAgent agent;
     private FBDMachine auto;
+    private ServiceAgent agent;
 
+    private FBDMachine testAuto;
+    private ServiceAgent testAgent;
+    private IDCard card;
     @BeforeEach
     public void setUp() {
-        agent = new ServiceAgent();
         auto = new FBDMachine();
+        agent = new ServiceAgent();
+
+
     }
 
     @Test
@@ -47,14 +52,15 @@ public class TestApp {
 
     @Test
     public void testStartUp() {
-        FBDMachine testAuto = new FBDMachine();
-        ServiceAgent testAgent = new ServiceAgent();
-        IDCard card = new IDCard();
+
+        testAuto = new FBDMachine();
+        testAgent = new ServiceAgent();
+        card = new IDCard();
 
         testAgent.setCard(card);
         card.setStatus(IDCardStatus.ACTIVE);
 
         testAuto.startup(testAgent, 0);
-        assertTrue(StateEnum.LOCKED == testAuto.getState());
+        assertSame(StateEnum.ON, testAuto.getState());
     }
 }
