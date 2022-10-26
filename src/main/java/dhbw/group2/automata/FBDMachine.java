@@ -22,8 +22,8 @@ import java.util.stream.Collectors;
 public class FBDMachine {
     public static final float weightLimit = 23;
     private final FBDSection[] sections;
-    private final List<Passenger> leftQueue = new ArrayList<>();
-    private final List<Passenger> rightQueue = new ArrayList<>();
+    private final Queue<Passenger> leftQueue = new ArrayDeque<>();
+    private final Queue<Passenger> rightQueue = new ArrayDeque<>();
     private final IPlaneSeatMap seatMap = new AirbusA350_900SeatMap();
     private final Map<String, Ticket> availableTickets = new HashMap<>();
     private final Map<Integer, BagBoardRecord> boardRecordMap = new HashMap<>();
