@@ -56,10 +56,11 @@ public class TestApp {
     }
 
     @Test
-    public void testStartUp() {
+    public void testStartUpShutdown() {
         testAuto = new FBDMachine();
         testAgent = new ServiceAgent();
 
+        //test startup() -> state can only be changed, if human is service agent
         testAuto.startup(testFPO, 0);
         assertSame(StateEnum.OFF, testAuto.getState());
 
@@ -68,6 +69,20 @@ public class TestApp {
 
         testAuto.startup(testAgent, 0);
         assertSame(StateEnum.ON, testAuto.getState());
-    }
 
+
+        //test shutdown() -> same as above
+        testAuto.shutdown(testFPO, 0);
+        assertSame(StateEnum.ON, testAuto.getState());
+
+        testAuto.shutdown(testP, 0);
+        assertSame(StateEnum.ON, testAuto.getState());
+
+        testAuto.shutdown(testAgent, 0);
+        assertSame(StateEnum.OFF, testAuto.getState());
+
+        //test data analytics
+
+        //test
+    }
 }

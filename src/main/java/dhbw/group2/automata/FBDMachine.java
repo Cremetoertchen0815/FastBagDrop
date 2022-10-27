@@ -248,7 +248,8 @@ public class FBDMachine {
         }
     }
 
-    public void analyseData(int section) {
+    public void analyseData(Human actor, int section) {
+        if (!(actor instanceof ServiceAgent)) return;
         var weights = checkedInBaggage.stream().collect(Collectors.groupingBy(BaggageClassTuple::bookingClass, Collectors.summingDouble(x -> x.baggage().getWeight())));
         sections[section].display.printMessage(weights.toString());
         var pass = checkedInPassengers.stream().sorted(Comparator.comparing(x -> x.getName().split(" ")[1]))
@@ -273,7 +274,6 @@ public class FBDMachine {
     public Queue<Passenger> getLeftQueue() {
         return leftQueue;
     }
-
     public Queue<Passenger> getRightQueue() {
         return rightQueue;
     }
