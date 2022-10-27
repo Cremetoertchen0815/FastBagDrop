@@ -10,6 +10,6 @@ public class Main {
         auto.importFromCSV(agent);
         auto.warmSimulation();
         auto.checkIn();
-        auto.export();
+        auto.export(agent);
     }
 }

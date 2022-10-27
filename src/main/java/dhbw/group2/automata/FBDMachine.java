@@ -33,6 +33,7 @@ public class FBDMachine {
     private MachineManufacturer manufacturer;
     private StateEnum state = StateEnum.OFF;
     private int timesLocked = 0;
+    private Map<BookingClass, Double> weights;
     private int boardRecordIndex = 0;
 
     public FBDMachine() {
@@ -65,7 +66,7 @@ public class FBDMachine {
         var dsp = sections[section].display;
         switch (state) {
             case ON -> {
-                dsp.showButtonAsync("Export", this::export);
+                dsp.showButtonAsync("Export", () -> export(new ServiceAgent()));
                 dsp.showButtonAsync("Shutdown", () -> shutdown(actor, section));
             }
             case OFF -> dsp.showButtonAsync("Startup", () -> startup(actor, section));
@@ -252,14 +253,15 @@ public class FBDMachine {
 
     public void analyseData(Human actor, int section) {
         if (!(actor instanceof ServiceAgent)) return;
-        var weights = checkedInBaggage.stream().collect(Collectors.groupingBy(BaggageClassTuple::bookingClass, Collectors.summingDouble(x -> x.baggage().getWeight())));
+        this.weights = checkedInBaggage.stream().collect(Collectors.groupingBy(BaggageClassTuple::bookingClass, Collectors.summingDouble(x -> x.baggage().getWeight())));
         sections[section].display.printMessage(weights.toString());
         var pass = checkedInPassengers.stream().sorted(Comparator.comparing(x -> x.getName().split(" ")[1]))
                 .collect(Collectors.groupingBy(x -> x.getTicket().getBookingClass(), Collectors.mapping(Passenger::toString, Collectors.toList())));
         sections[section].display.printMessage(pass.toString());
     }
 
-    public void export() {
+    public void export(Human actor) {
+        if (!(actor instanceof ServiceAgent)) return;
         try (BufferedWriter bw = new BufferedWriter(new FileWriter("fast_bag_drop.csv"))) {
 
             for (var rc : boardRecordMap.values()) {
@@ -304,5 +306,9 @@ public class FBDMachine {
 
     public int getTimesLocked() {
         return timesLocked;
+    }
+
+    public Map<BookingClass, Double> getWeights() {
+        return weights;
     }
 }

@@ -68,7 +68,7 @@ public class TestApp {
     }
 
     @Test
-    public void testStart_Shutdown_Data_Export() {
+    public void testStart_Shutdown() {
         testAuto = new FBDMachine();
         testAgent = new ServiceAgent();
 
@@ -93,9 +93,50 @@ public class TestApp {
         testAuto.shutdown(testAgent, 0);
         assertSame(StateEnum.OFF, testAuto.getState());
 
-        //test data analytics
+
 
         //test export
+
+    }
+
+    @Test
+    public void testData_Export() {
+        FBDMachine auto_mach = new FBDMachine();
+        Passport passport = new Passport("TESTID");
+        Baggage b = new Baggage("content");
+        b.setWeight(5);
+        Baggage[] blist = {b};
+        BookingClass bC = BookingClass.E;
+
+        Ticket t = new Ticket(
+                "Test",
+                "Test",
+                BookingClass.B,
+                "Test",
+                "Test",
+                "Test",
+                "Test",
+                0,
+                "Test",
+                "Test"
+        );
+
+        Passenger p = new Passenger("TEST TEST", passport, blist);
+        ServiceAgent ag_ent = new ServiceAgent();
+        auto_mach.addTicket(p, t);
+
+        auto_mach.checkIn(p, auto_mach.getSections()[0]);
+//        auto_mach.baggageDrop(p, auto_mach.getSections()[0]);
+
+        //test data analytics
+        auto_mach.analyseData(ag_ent, 0);
+
+        auto_mach.analyseData(agent, 0);
+        assertEquals(5.0, auto_mach.getWeights().get(p.getTicket().getBookingClass()));
+
+
+        //export
+
     }
     @Test
     public void testStartUpShutdown() {
