@@ -239,6 +239,7 @@ public class TestApp {
 
         auto_mach.checkIn(p, auto_mach.getSections()[0]);
         auto_mach.baggageDrop(p, auto_mach.getSections()[0]);
+        //should be 2 times because checkin() calls baggagedrop()
         assertEquals(2, auto_mach.getTimesLocked());
     }
 
