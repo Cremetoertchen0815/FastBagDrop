@@ -280,4 +280,12 @@ public class FBDMachine {
     public StateEnum getState() {
         return state;
     }
+
+    public void setState(StateEnum state) {
+        this.state = state;
+    }
+
+    public Map<Integer, BagBoardRecord> getBoardRecordMap() {
+        return boardRecordMap;
+    }
 }
