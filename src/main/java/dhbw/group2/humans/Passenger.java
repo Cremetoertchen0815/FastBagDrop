@@ -13,13 +13,11 @@ public class Passenger extends Human {
     private IBoardingPass boardingPass;
     private Voucher voucher;
 
-
     public Passenger(String name, Passport passport, Baggage[] baggage) {
         this.name = name;
         this.passport = passport;
         this.baggage = baggage;
     }
-
 
     public Passport getPassport() {
         return passport;
@@ -52,5 +50,10 @@ public class Passenger extends Human {
     @Override
     public String toString() {
         return "(" + name + "|" + ticket.getBookingClass().toString() + "|" + boardingPass.getSeat().toString() + "|" + baggage.length + ")";
+    }
+
+
+    public void setTicket(Ticket ticket) {
+        this.ticket = ticket;
     }
 }

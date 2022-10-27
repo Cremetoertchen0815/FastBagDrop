@@ -22,8 +22,8 @@ import java.util.stream.Collectors;
 public class FBDMachine {
     public static final float weightLimit = 23;
     private final FBDSection[] sections;
-    private final List<Passenger> leftQueue = new ArrayList<>();
-    private final List<Passenger> rightQueue = new ArrayList<>();
+    private final Queue<Passenger> leftQueue = new ArrayDeque<>();
+    private final Queue<Passenger> rightQueue = new ArrayDeque<>();
     private final IPlaneSeatMap seatMap = new AirbusA350_900SeatMap();
     private final Map<String, Ticket> availableTickets = new HashMap<>();
     private final Map<Integer, BagBoardRecord> boardRecordMap = new HashMap<>();
@@ -31,7 +31,7 @@ public class FBDMachine {
     private final List<Passenger> checkedInPassengers = new ArrayList<>();
     private UUID serialNumber;
     private MachineManufacturer manufacturer;
-    private StateEnum state;
+    private StateEnum state = StateEnum.OFF;
     private int boardRecordIndex = 0;
 
     public FBDMachine() {
@@ -90,7 +90,7 @@ public class FBDMachine {
         state = StateEnum.ON;
     }
 
-    private void checkIn(Passenger passenger, FBDSection section) {
+    public void checkIn(Passenger passenger, FBDSection section) {
         passenger.receiveTicket(section.identityScanner.identityPassenger(passenger, this));
         if (passenger.getTicket() == null) {
             section.display.printMessage("Sorry. No registered ticket found for " + passenger.getName() + " and flight LH2121");
@@ -248,7 +248,8 @@ public class FBDMachine {
         }
     }
 
-    public void analyseData(int section) {
+    public void analyseData(Human actor, int section) {
+        if (!(actor instanceof ServiceAgent)) return;
         var weights = checkedInBaggage.stream().collect(Collectors.groupingBy(BaggageClassTuple::bookingClass, Collectors.summingDouble(x -> x.baggage().getWeight())));
         sections[section].display.printMessage(weights.toString());
         var pass = checkedInPassengers.stream().sorted(Comparator.comparing(x -> x.getName().split(" ")[1]))
@@ -270,4 +271,32 @@ public class FBDMachine {
 
     }
 
+    public Queue<Passenger> getLeftQueue() {
+        return leftQueue;
+    }
+    public Queue<Passenger> getRightQueue() {
+        return rightQueue;
+    }
+    public StateEnum getState() {
+        return state;
+    }
+
+    public void setState(StateEnum state) {
+        this.state = state;
+    }
+
+    public Map<Integer, BagBoardRecord> getBoardRecordMap() {
+        return boardRecordMap;
+    }
+
+    public FBDSection[] getSections() {
+        return sections;
+    }
+
+    public List<Passenger> getCheckedInPassengers() {
+        return checkedInPassengers;
+    }
+    public void addTicket(Passenger p, Ticket t) {
+        availableTickets.put(p.getPassport().getId(), t);
+    }
 }
