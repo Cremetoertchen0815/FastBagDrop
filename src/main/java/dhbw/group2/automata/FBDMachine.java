@@ -296,4 +296,7 @@ public class FBDMachine {
     public List<Passenger> getCheckedInPassengers() {
         return checkedInPassengers;
     }
+    public void addTicket(Passenger p, Ticket t) {
+        availableTickets.put(p.getPassport().getId(), t);
+    }
 }

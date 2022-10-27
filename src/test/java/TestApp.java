@@ -200,20 +200,15 @@ public class TestApp {
                 "Test"
         );
 
-        Ticket nt = new Ticket("T", "T", bC, "T", "T", "T", "T", 1, "T", "T");
         Passenger p = new Passenger("TEST TEST", passport, blist);
-        p.setTicket(nt);
-        assertEquals(BookingClass.B, t.getBookingClass());
-
+        auto_mach.addTicket(p, t);
 
         auto_mach.checkIn(p, auto_mach.getSections()[0]);
         auto_mach.baggageDrop(p, auto_mach.getSections()[0]);
 
-        assertEquals(1, auto_mach.getCheckedInPassengers().size());
-//
-//        for (Passenger pass : auto_mach.getCheckedInPassengers()) {
-//            if (pass == p) assertSame(pass, p);
-//        }
+        for (Passenger pass : auto_mach.getCheckedInPassengers()) {
+            assertSame(pass, p);
+        }
     }
 
     @Test
