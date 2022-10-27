@@ -90,7 +90,7 @@ public class FBDMachine {
         state = StateEnum.ON;
     }
 
-    private void checkIn(Passenger passenger, FBDSection section) {
+    public void checkIn(Passenger passenger, FBDSection section) {
         passenger.receiveTicket(section.identityScanner.identityPassenger(passenger, this));
         if (passenger.getTicket() == null) {
             section.display.printMessage("Sorry. No registered ticket found for " + passenger.getName() + " and flight LH2121");
@@ -287,5 +287,13 @@ public class FBDMachine {
 
     public Map<Integer, BagBoardRecord> getBoardRecordMap() {
         return boardRecordMap;
+    }
+
+    public FBDSection[] getSections() {
+        return sections;
+    }
+
+    public List<Passenger> getCheckedInPassengers() {
+        return checkedInPassengers;
     }
 }

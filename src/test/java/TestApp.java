@@ -7,9 +7,13 @@ import dhbw.group2.humans.*;
 import dhbw.group2.humans.identification.IDCard;
 import dhbw.group2.humans.identification.IDCardStatus;
 import dhbw.group2.humans.identification.Passport;
+import dhbw.group2.plane.PlaneSeat;
 import dhbw.group2.plane.boarding.Baggage;
+import dhbw.group2.plane.boarding.BaggageTag;
+import dhbw.group2.plane.boarding.IBoardingPass;
 import dhbw.group2.plane.boarding.OnlineBoardingPass;
 import dhbw.group2.plane.ticket.BookingClass;
+import dhbw.group2.plane.ticket.Ticket;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -19,7 +23,11 @@ import org.mockito.Mockito;
 import javax.swing.plaf.metal.MetalBorders;
 import javax.swing.plaf.nimbus.State;
 
+import java.awt.print.Book;
 import java.beans.FeatureDescriptor;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.AdditionalMatchers.*;
@@ -141,25 +149,71 @@ public class TestApp {
 
     @Test
     public void testBoardingPass() {
-        BagBoardRecord person = auto.getBoardRecordMap().get(0);
+        OnlineBoardingPass bp = new OnlineBoardingPass();
+        BaggageTag tag = new BaggageTag();
+        BaggageTag[] tagList = {tag};
+        PlaneSeat p = new PlaneSeat(0, 'x');
 
-        assertSame(BagBoardResult.OK, person.result());
-        assertSame("Carolina Sharp", person.ticket().getName());
-        assertSame(BookingClass.B, person.ticket().getBookingClass());
-        assertSame("8QRI1IKHQ", person.passport().getId());
-        assertSame("tzcfqdv5g4aefr3", person.ticket().getId());
-        assertSame(0, person.baggageTag().getId());
+
+        bp.setDestination("TESTDEST");
+        bp.setBaggageTags(Arrays.stream(tagList).toList());
+        bp.setFlight("TestFlight");
+        bp.setSource("TESTSOURCE");
+        bp.setPlaneSeat(p);
+
+        assertEquals("TESTDEST", bp.getDestination());
+        for (BaggageTag bt : tagList) {
+            assertEquals(tag, bt);
+        }
+        assertEquals("TestFlight", bp.getFlight());
+        assertEquals("TESTSOURCE", bp.getSource());
+        assertEquals(p, bp.getSeat());
+
 
     }
 
     @Test
     public void testBaggageTag() {
-
+        BaggageTag tag = new BaggageTag();
+        assertEquals(0, tag.getId());
     }
 
     @Test
     public void testCheckInBaggageDropNorm() {
+        FBDMachine auto_mach = new FBDMachine();
+        Passport passport = new Passport("TESTID");
+        Baggage b = new Baggage("content");
+        b.setWeight(5);
+        Baggage[] blist = {b};
+        BookingClass bC = BookingClass.E;
 
+        Ticket t = new Ticket(
+                "Test",
+                "Test",
+                BookingClass.B,
+                "Test",
+                "Test",
+                "Test",
+                "Test",
+                0,
+                "Test",
+                "Test"
+        );
+
+        Ticket nt = new Ticket("T", "T", bC, "T", "T", "T", "T", 1, "T", "T");
+        Passenger p = new Passenger("TEST TEST", passport, blist);
+        p.setTicket(nt);
+        assertEquals(BookingClass.B, t.getBookingClass());
+
+
+        auto_mach.checkIn(p, auto_mach.getSections()[0]);
+        auto_mach.baggageDrop(p, auto_mach.getSections()[0]);
+
+        assertEquals(1, auto_mach.getCheckedInPassengers().size());
+//
+//        for (Passenger pass : auto_mach.getCheckedInPassengers()) {
+//            if (pass == p) assertSame(pass, p);
+//        }
     }
 
     @Test
