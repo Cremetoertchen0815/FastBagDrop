@@ -213,27 +213,33 @@ public class TestApp {
 
     @Test
     public void testCheckInBaggageDropSpec() {
+        FBDMachine auto_mach = new FBDMachine();
+        Passport passport = new Passport("TESTID");
+        Baggage b = new Baggage("explosives");
+        Baggage ba = new Baggage("cont");
+        b.setWeight(5);
+        Baggage[] blist = {b, ba};
+        BookingClass bC = BookingClass.E;
 
-    }
+        Ticket t = new Ticket(
+                "Test",
+                "Test",
+                BookingClass.B,
+                "Test",
+                "Test",
+                "Test",
+                "Test",
+                0,
+                "Test",
+                "Test"
+        );
 
-    @Test
-    public void testIDPassportFingerPrintFace() {
+        Passenger p = new Passenger("TEST TEST", passport, blist);
+        auto_mach.addTicket(p, t);
 
-    }
-
-    @Test
-    public void testBaggageSearchAlgorithm() {
-
-    }
-
-    @Test
-    public void testBaggageTagQR() {
-
-    }
-
-    @Test
-    public void testUseApp() {
-
+        auto_mach.checkIn(p, auto_mach.getSections()[0]);
+        auto_mach.baggageDrop(p, auto_mach.getSections()[0]);
+        assertEquals(2, auto_mach.getTimesLocked());
     }
 
 }

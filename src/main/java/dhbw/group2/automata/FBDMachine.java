@@ -32,6 +32,7 @@ public class FBDMachine {
     private UUID serialNumber;
     private MachineManufacturer manufacturer;
     private StateEnum state = StateEnum.OFF;
+    private int timesLocked = 0;
     private int boardRecordIndex = 0;
 
     public FBDMachine() {
@@ -148,6 +149,7 @@ public class FBDMachine {
                 beep();
                 section.display.printMessage("Baggage exceeds weight limit of 23 kg");
             } else if (scanBaggage(section)) {
+                timesLocked++;
                 state = StateEnum.LOCKED;
                 FederalPolice.getInstance().reportForInvestigation(this, section.section);
             } else {
@@ -298,5 +300,9 @@ public class FBDMachine {
     }
     public void addTicket(Passenger p, Ticket t) {
         availableTickets.put(p.getPassport().getId(), t);
+    }
+
+    public int getTimesLocked() {
+        return timesLocked;
     }
 }
