@@ -93,10 +93,6 @@ public class TestApp {
         testAuto.shutdown(testAgent, 0);
         assertSame(StateEnum.OFF, testAuto.getState());
 
-
-
-        //test export
-
     }
 
     @Test
@@ -134,9 +130,9 @@ public class TestApp {
         auto_mach.analyseData(agent, 0);
         assertEquals(5.0, auto_mach.getWeights().get(p.getTicket().getBookingClass()));
 
-
         //export
-
+        auto_mach.export(ag_ent);
+        assertEquals(1, auto_mach.getCountExports());
     }
     @Test
     public void testStartUpShutdown() {

@@ -34,6 +34,7 @@ public class FBDMachine {
     private StateEnum state = StateEnum.OFF;
     private int timesLocked = 0;
     private Map<BookingClass, Double> weights;
+    private int countExports = 0;
     private int boardRecordIndex = 0;
 
     public FBDMachine() {
@@ -262,6 +263,7 @@ public class FBDMachine {
 
     public void export(Human actor) {
         if (!(actor instanceof ServiceAgent)) return;
+        countExports++;
         try (BufferedWriter bw = new BufferedWriter(new FileWriter("fast_bag_drop.csv"))) {
 
             for (var rc : boardRecordMap.values()) {
@@ -310,5 +312,9 @@ public class FBDMachine {
 
     public Map<BookingClass, Double> getWeights() {
         return weights;
+    }
+
+    public int getCountExports() {
+        return countExports;
     }
 }
