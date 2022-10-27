@@ -4,6 +4,7 @@ import dhbw.group2.automata.StateEnum;
 import dhbw.group2.humans.*;
 import dhbw.group2.humans.identification.IDCard;
 import dhbw.group2.humans.identification.IDCardStatus;
+import dhbw.group2.humans.identification.Passport;
 import dhbw.group2.plane.boarding.Baggage;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -12,6 +13,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 
 import javax.swing.plaf.metal.MetalBorders;
+import javax.swing.plaf.nimbus.State;
 
 import java.beans.FeatureDescriptor;
 
@@ -25,12 +27,15 @@ public class TestApp {
 
     private FBDMachine testAuto;
     private ServiceAgent testAgent;
+    private FederalPoliceOfficer testFPO;
+    private Passenger testP;
     private IDCard card;
     @BeforeEach
     public void setUp() {
         auto = new FBDMachine();
         agent = new ServiceAgent();
-
+        testFPO = new FederalPoliceOfficer();
+        testP = new Passenger("Test", new Passport("TESTID"), null);
 
     }
 
@@ -52,15 +57,17 @@ public class TestApp {
 
     @Test
     public void testStartUp() {
-
         testAuto = new FBDMachine();
         testAgent = new ServiceAgent();
-        card = new IDCard();
 
-        testAgent.setCard(card);
-        card.setStatus(IDCardStatus.ACTIVE);
+        testAuto.startup(testFPO, 0);
+        assertSame(StateEnum.OFF, testAuto.getState());
+
+        testAuto.startup(testP, 0);
+        assertSame(StateEnum.OFF, testAuto.getState());
 
         testAuto.startup(testAgent, 0);
         assertSame(StateEnum.ON, testAuto.getState());
     }
+
 }

@@ -13,7 +13,6 @@ public class Passenger extends Human {
     private IBoardingPass boardingPass;
     private Voucher voucher;
 
-
     public Passenger(String name, Passport passport, Baggage[] baggage) {
         this.name = name;
         this.passport = passport;

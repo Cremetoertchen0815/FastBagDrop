@@ -31,7 +31,7 @@ public class FBDMachine {
     private final List<Passenger> checkedInPassengers = new ArrayList<>();
     private UUID serialNumber;
     private MachineManufacturer manufacturer;
-    private StateEnum state;
+    private StateEnum state = StateEnum.OFF;
     private int boardRecordIndex = 0;
 
     public FBDMachine() {
