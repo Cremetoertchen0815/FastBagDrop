@@ -40,6 +40,8 @@ public class TestApp {
 
     @Test
     public void testInitQueues() {
+        assertNotNull(auto.getRightQueue());
+        assertNotNull(auto.getLeftQueue());
         for (Passenger p : auto.getLeftQueue()) {
             assertNotNull(p);
             for (Baggage b : p.getBaggage()) {
