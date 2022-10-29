@@ -1,37 +1,23 @@
-import dhbw.group2.Main;
-import dhbw.group2.automata.BagBoardRecord;
-import dhbw.group2.automata.BagBoardResult;
 import dhbw.group2.automata.FBDMachine;
 import dhbw.group2.automata.StateEnum;
-import dhbw.group2.humans.*;
+import dhbw.group2.humans.FederalPoliceOfficer;
+import dhbw.group2.humans.Passenger;
+import dhbw.group2.humans.ServiceAgent;
 import dhbw.group2.humans.identification.IDCard;
 import dhbw.group2.humans.identification.IDCardStatus;
 import dhbw.group2.humans.identification.Passport;
 import dhbw.group2.plane.PlaneSeat;
 import dhbw.group2.plane.boarding.Baggage;
 import dhbw.group2.plane.boarding.BaggageTag;
-import dhbw.group2.plane.boarding.IBoardingPass;
 import dhbw.group2.plane.boarding.OnlineBoardingPass;
 import dhbw.group2.plane.ticket.BookingClass;
 import dhbw.group2.plane.ticket.Ticket;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Mock;
-import org.mockito.Mockito;
 
-import javax.swing.plaf.metal.MetalBorders;
-import javax.swing.plaf.nimbus.State;
-
-import java.awt.print.Book;
-import java.beans.FeatureDescriptor;
 import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.AdditionalMatchers.*;
-import static org.mockito.Mockito.*;
 
 public class TestApp {
     private FBDMachine auto;
@@ -42,6 +28,7 @@ public class TestApp {
     private FederalPoliceOfficer testFPO;
     private Passenger testP;
     private IDCard card;
+
     @BeforeEach
     public void setUp() {
         auto = new FBDMachine();
@@ -134,6 +121,7 @@ public class TestApp {
         auto_mach.export(ag_ent);
         assertEquals(1, auto_mach.getCountExports());
     }
+
     @Test
     public void testStartUpShutdown() {
 

@@ -27,6 +27,10 @@ public class Passenger extends Human {
         return ticket;
     }
 
+    public void setTicket(Ticket ticket) {
+        this.ticket = ticket;
+    }
+
     public Baggage[] getBaggage() {
         return baggage;
     }
@@ -50,10 +54,5 @@ public class Passenger extends Human {
     @Override
     public String toString() {
         return "(" + name + "|" + ticket.getBookingClass().toString() + "|" + boardingPass.getSeat().toString() + "|" + baggage.length + ")";
-    }
-
-
-    public void setTicket(Ticket ticket) {
-        this.ticket = ticket;
     }
 }

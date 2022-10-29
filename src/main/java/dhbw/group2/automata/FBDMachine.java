@@ -280,9 +280,11 @@ public class FBDMachine {
     public Queue<Passenger> getLeftQueue() {
         return leftQueue;
     }
+
     public Queue<Passenger> getRightQueue() {
         return rightQueue;
     }
+
     public StateEnum getState() {
         return state;
     }
@@ -302,6 +304,7 @@ public class FBDMachine {
     public List<Passenger> getCheckedInPassengers() {
         return checkedInPassengers;
     }
+
     public void addTicket(Passenger p, Ticket t) {
         availableTickets.put(p.getPassport().getId(), t);
     }
