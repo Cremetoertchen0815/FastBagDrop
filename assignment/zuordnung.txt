@@ -1,9 +1,0 @@
----Aufgabenzuordnung---
-S0[NR]/[FERTIG? J/N]: [NAME PERSON]([BESCHREIBUNG])
-S01/J: Nico(Anforderungsmanagement (SOPHIST Master-Methode), Anwendungsfalldiagramm(e), Aktivitätsdiagramme für die Anwendungsfälle Startup, Shutdown und Unlock)
-S02/N: Gabriel(Aktivitätsdiagramm(e) für Check-In mit assoziierten Unterprozessen und Klassendiagramme (auszugsweise) für zukünftige Anforderungen)
-S03/J: Johannes(Klassendiagramm und Paketdiagramm für Basis)
-S04/J: Johannes(Aktualisierung Klassendiagramm auf Basis S03 unter konsequenter Berücksichtigung der SOLID-Design Prinzipien und zukünftigen Anforderungen)
-S05/J: Enes(Sequenzdiagramm(e) und Zustandsdiagramm(e))
-S06/J: Mirco(Implementierung auf Basis des aktualisierten Klassendiagramms S04)
-S07/J: Karam(Testmanagement | JUnit und/oder Mockito für Implementierung S06)
